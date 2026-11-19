@@ -5,12 +5,19 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 // Fitur auth & profil — Husein (HSM)
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
+
+    // Tujuan redirect setelah login: route milik anggota lain jika sudah ada, kalau belum ke /profil.
+    private function home(string $routeName): string
+    {
+        return Route::has($routeName) ? route($routeName) : route('profile.edit');
+    }
 
     private function makeUser(string $role = 'user', array $attrs = []): User
     {
@@ -40,7 +47,7 @@ class AuthTest extends TestCase
             'password' => 'password1',
             'password_confirmation' => 'password1',
             'role' => 'admin', // harus diabaikan
-        ])->assertRedirect(url('/beranda'));
+        ])->assertRedirect($this->home('home'));
 
         $user = User::where('email', 'budi@student.ub.ac.id')->firstOrFail();
         $this->assertSame('user', $user->fresh()->role);
@@ -65,13 +72,13 @@ class AuthTest extends TestCase
     {
         $this->makeUser();
         $this->post('/login', ['email' => 'alya@student.ub.ac.id', 'password' => 'rahasia123'])
-            ->assertRedirect(url('/beranda'));
+            ->assertRedirect($this->home('home'));
 
         $this->post('/logout');
 
         $this->makeUser('admin', ['email' => 'admin@filkom.ub.ac.id']);
         $this->post('/login', ['email' => 'admin@filkom.ub.ac.id', 'password' => 'rahasia123'])
-            ->assertRedirect(url('/admin'));
+            ->assertRedirect($this->home('admin.dashboard'));
     }
 
     public function test_login_gagal_dengan_password_salah(): void
@@ -86,8 +93,8 @@ class AuthTest extends TestCase
 
     public function test_user_yang_sudah_login_tidak_bisa_buka_halaman_login(): void
     {
-        $this->actingAs($this->makeUser())->get('/login')->assertRedirect(url('/beranda'));
-        $this->actingAs($this->makeUser('admin', ['email' => 'a@filkom.ub.ac.id']))->get('/register')->assertRedirect(url('/admin'));
+        $this->actingAs($this->makeUser())->get('/login')->assertRedirect($this->home('home'));
+        $this->actingAs($this->makeUser('admin', ['email' => 'a@filkom.ub.ac.id']))->get('/register')->assertRedirect($this->home('admin.dashboard'));
     }
 
     public function test_logout(): void

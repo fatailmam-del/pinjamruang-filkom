@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -97,9 +98,13 @@ class AuthController extends Controller
         return redirect()->route('landing')->with('success', 'Kamu sudah keluar.');
     }
 
-    // Halaman awal sesuai role. Dipakai juga oleh middleware guest (bootstrap/app.php).
+    // Halaman awal sesuai role: admin → /admin (admin.dashboard), user → /beranda (home).
+    // Selama route itu belum dibuat anggota lain, sementara diarahkan ke /profil agar tidak 404.
+    // Dipakai juga oleh middleware guest (bootstrap/app.php) dan tombol di navbar landing.
     public static function homeFor(?User $user): string
     {
-        return $user?->isAdmin() ? url('/admin') : url('/beranda');
+        $route = $user?->isAdmin() ? 'admin.dashboard' : 'home';
+
+        return Route::has($route) ? route($route) : route('profile.edit');
     }
 }

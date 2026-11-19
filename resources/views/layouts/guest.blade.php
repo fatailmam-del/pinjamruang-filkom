@@ -16,7 +16,7 @@
             </div>
             <div class="d-flex align-items-center gap-2">
                 @auth
-                    <a href="{{ auth()->user()->isAdmin() ? url('/admin') : url('/beranda') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ \App\Http\Controllers\AuthController::homeFor(auth()->user()) }}" class="btn btn-primary btn-sm">
                         {{ auth()->user()->isAdmin() ? 'Panel Admin' : 'Beranda' }}
                     </a>
                 @else
