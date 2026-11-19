@@ -1,0 +1,29 @@
+/* Token warna PinjamRuang FILKOM (sama dengan Figma) */
+:root {
+  --pr-primary: #12357A;
+  --pr-primary-soft: #EAF0FA;
+  --pr-ink: #0A1B3D;
+  --pr-accent: #EE7B22;
+  --pr-bg: #F6F5F1;
+  --pr-border: #E3E0D8;
+  --pr-muted: #5C6170;
+  --bs-primary: #12357A;
+  --bs-primary-rgb: 18, 53, 122;
+  --bs-body-font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+body { background: var(--pr-bg); color: #14171F; }
+.btn-primary { --bs-btn-bg: var(--pr-primary); --bs-btn-border-color: var(--pr-primary); --bs-btn-hover-bg: #0C2A66; --bs-btn-hover-border-color: #0C2A66; }
+.card { border-color: var(--pr-border); border-radius: 16px; }
+.text-muted-pr { color: var(--pr-muted); }
+
+/* Badge status */
+.badge-status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+.badge-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge-pending  { background: #FCF1DB; color: #94570A; }
+.badge-approved { background: #E2F2E8; color: #17703F; }
+.badge-rejected { background: #FBE6E4; color: #B3261E; }
+
+/* Sidebar admin */
+.sidebar { width: 264px; min-height: 100vh; background: #fff; border-right: 1px solid var(--pr-border); }
+.sidebar .nav-link { color: var(--pr-muted); border-radius: 8px; }
+.sidebar .nav-link.active { background: var(--pr-primary-soft); color: var(--pr-primary); font-weight: 600; }
